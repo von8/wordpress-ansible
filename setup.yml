@@ -1,0 +1,8 @@
+---
+- name: system setup
+  hosts: qcloud-1023
+  gather_facts: false
+  vars:
+    ansible_custom_ssh_port: 7878
+  roles:
+    - role: changesshport
