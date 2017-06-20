@@ -2,6 +2,8 @@
 - name: system setup
   hosts: qcloud
   gather_facts: false
+  vars_files:
+    - variables/secrets.yml
   vars:
     ansible_custom_ssh_port: 7878
   roles:
@@ -9,3 +11,4 @@
     - role: fail2ban
     - role: addswap
       swap_size: 1024
+    - role: database

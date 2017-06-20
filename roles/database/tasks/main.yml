@@ -1,0 +1,85 @@
+---
+  - name: install latest version mariadb
+    apt: pkg={{ item }} update_cache=yes cache_valid_time=3600
+    sudo: True
+    with_items:
+      - mariadb-server
+      - mariadb-client
+      - python3-pip
+      - python-pip
+      - python-mysqldb
+
+  - name: ensure mariadb is running
+    systemd: name=mysql state=started enabled=yes
+    sudo: True
+
+  - name: Create a new database for wordpress
+    mysql_db:
+        name: "{{ db_name }}"
+        state: present
+    sudo: True
+
+  - name: Set {{ wp_db_user }} password
+    mysql_user: 
+      user: "{{ wp_db_user }}" 
+      password: "{{ wordpress_db_password }}"
+      state: present
+      priv: "{{ db_name }}.*:ALL"
+    sudo: True
+
+  - name: Set {{ db_user }} password
+    mysql_user: 
+      user: "{{ db_user }}" 
+      password: "{{ db_password }}"
+      priv: '*.*:ALL'
+      state: present
+    sudo: True
+
+  - name: config for easy access as {{ db_user }} user
+    template:
+        src: templates/my-cnf.j2 
+        dest: /home/ubuntu/.my.cnf
+        owner: root
+        group: root
+        mode: 0400
+    sudo: True
+
+  - name: Delect anonymous sql server user for localhost
+    mysql_user: 
+      user: ""
+      state: "absent"
+    sudo: True
+
+  - name: secure the sql {{ db_user }} user for ipv6 localhost (::1)
+    mysql_user:
+        user: "{{ db_user }}"
+        password: "{{ db_password }}"
+        host: "::1"
+    sudo: True
+
+  - name: secure the sql {{ db_user }} user for ipv4 localhost (127.0.0.1)
+    mysql_user: 
+        user: "{{ db_user }}"
+        password: "{{ db_password }}"
+        host: "127.0.0.1"
+    sudo: True
+
+  - name: secure the sql {{ db_user }} user for localhost domain (localhost)
+    mysql_user:
+        user: "{{ db_user }}"
+        password: "{{ db_password }}"
+        host: "localhost"
+    sudo: True
+
+  - name: secure the sql {{ db_user }} user for {{ server_hostname }} domain
+    mysql_user:
+        user: "{{ db_user }}"
+        password: "{{ db_password }}"
+        host: "{{ server_hostname }}"
+    sudo: True
+
+  - name: remove the mysql test database
+    mysql_db:
+        db: test
+        state: absent
+    sudo: True
