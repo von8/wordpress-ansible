@@ -1,0 +1,14 @@
+---
+  - name: install fail2ban
+    apt: pkg=fail2ban update_cache=yes cache_valid_time=3600
+    sudo: True
+
+  - name: ensure fail2ban is running (and enable it at boot)
+    systemd: name=fail2ban state=started enabled=yes
+    sudo: True
+
+  - name: set jail.local
+    template: src=templates/jail.local.j2 dest=/etc/fail2ban/jail.local
+    sudo: True
+    notify:
+    - restart fail2ban

@@ -1,8 +1,9 @@
 ---
 - name: system setup
-  hosts: qcloud-1023
+  hosts: qcloud
   gather_facts: false
   vars:
     ansible_custom_ssh_port: 7878
   roles:
     - role: changesshport
+    - role: fail2ban

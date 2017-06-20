@@ -1,0 +1,20 @@
+[DEFAULT]
+# Ban hosts for one day:
+bantime = 86400
+maxretry = 5
+
+destmail = root@localhost
+sendername = Fail2Ban
+mta = sendmail
+
+# Override /etc/fail2ban/jail.d/00-firewalld.conf:
+banaction = iptables-multiport
+
+[sshd]
+enabled = true
+
+[sshd-ddos]
+enabled = true
+
+[nginx-http-auth]
+enable = true
