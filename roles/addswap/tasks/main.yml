@@ -1,0 +1,46 @@
+---
+- name: check if swap file exists
+  stat:
+    path: "/tmp/swap"
+  register: swap_file_check
+
+- name: Add swap file
+  command: dd if=/dev/zero of=/tmp/swap bs=1M count={{ swap_size }}
+  when: not swap_file_check.stat.exists 
+  sudo: True
+
+- name: Set up swapspace
+  command: mkswap /tmp/swap
+  when: not swap_file_check.stat.exists
+  sudo: True
+  
+- name: check swap permission belongs to root
+  stat:
+    path: /tmp/swap
+  register: swap_permission
+
+- name: Change permission of swap
+  file:
+    path: /tmp/swap
+    owner: root
+    mode: 0600
+  when: swap_permission.stat.pw_name != 'root' and
+    swap_permission.stat.mode != '0600'
+  sudo: True
+
+- name: Swam on
+  command: swapon /tmp/swap
+  when: ansible_swaptotal_mb < 1
+  sudo: True
+
+- name: Copy rc.local.conf to remote host
+  copy:
+    src: templates/rc.local.conf
+    dest: /tmp/rc.local.conf
+    owner: root
+    group: root
+  sudo: True
+
+- name: Set swapon run when system start
+  shell: cat /tmp/rc.local.conf | tee -a /etc/rc.local
+  sudo: True

@@ -7,3 +7,5 @@
   roles:
     - role: changesshport
     - role: fail2ban
+    - role: addswap
+      swap_size: 1024
