@@ -1,0 +1,13 @@
+---
+  - name: install apt packages
+    apt: pkg={{ item }} update_cache=yes cache_valid_time=3600
+    sudo: True
+    with_items:
+      - nginx
+      - php
+
+  - include: nginx.yml
+  - include: php.yml
+
+
+

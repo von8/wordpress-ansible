@@ -12,3 +12,4 @@
     - role: addswap
       swap_size: 1024
     - role: database
+    - role: wordpress

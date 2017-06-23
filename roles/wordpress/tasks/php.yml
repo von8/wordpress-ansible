@@ -1,0 +1,26 @@
+---
+  - name: install php modules
+    apt: pkg={{ item }} update_cache=yes cache_valid_time=3600
+    sudo: True
+    with_items:
+      - php-fpm
+      - php-mysql
+      - php-cli
+      - php-apcu
+      - php-gd
+      - php-imap
+      - php-ldap
+      - php-pear
+      - php-xml
+      - php-xmlrpc
+      - libmagickwand-dev
+      - libmagickcore-dev
+      - php-mbstring
+      - php-mcrypt
+      - php-soap
+      - php-bcmath
+      - php-memcached
+      - memcached
+
+  - name: ensure php-fpm is running
+    systemd: name=php7.0-fpm state=started enabled=yes

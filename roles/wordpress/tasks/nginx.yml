@@ -1,0 +1,3 @@
+---
+  - name: ensure nginx is running (and enable it at boot)
+    systemd: name=nginx state=started enabled=yes
