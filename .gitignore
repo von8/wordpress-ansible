@@ -2,3 +2,4 @@ hosts
 secrets.yml
 *.retry
 roles/wordpress/vars/main.yml
+roles/wordpress/files/wordpress-4.7.3-zh_CN.tar.gz
