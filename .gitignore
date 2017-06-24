@@ -1,3 +1,4 @@
 hosts
 secrets.yml
 *.retry
+roles/wordpress/vars/main.yml

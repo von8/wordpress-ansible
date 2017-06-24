@@ -1,3 +1,26 @@
 ---
+
+  - name: write nginx config
+    template:
+        src: nginx_wp_sites.j2 
+        dest: "/etc/nginx/sites-available/{{ domain }}"
+    sudo: True
+  
+  - name: setup nginx sites-available symlink
+    file: 
+      src: "/etc/nginx/sites-available/{{ domain }}"
+      dest: "/etc/nginx/sites-enabled/{{ domain }}"
+      state: link
+    sudo: True
+
+  - name: remove nginx sites-enabled default
+    file:
+      path: /etc/nginx/sites-enabled/default
+      state: absent
+    sudo: True
+    notify:
+      - restart nginx
+
   - name: ensure nginx is running (and enable it at boot)
     systemd: name=nginx state=started enabled=yes
+    sudo: True

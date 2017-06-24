@@ -1,0 +1,4 @@
+wp_version: wordpress-4.8-zh_CN
+wp_project_dir: /var/www
+wp_project_name: wordpress
+domain: www.example.com

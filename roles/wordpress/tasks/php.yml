@@ -21,6 +21,8 @@
       - php-bcmath
       - php-memcached
       - memcached
+    notify:
+        - restart php-fpm
 
   - name: ensure php-fpm is running
     systemd: name=php7.0-fpm state=started enabled=yes

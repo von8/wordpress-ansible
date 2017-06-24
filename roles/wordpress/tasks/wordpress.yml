@@ -1,0 +1,28 @@
+---
+  - name: Copy wordpress to hosts
+    copy:
+      src: "files/{{ wp_version }}.tar.gz"
+      dest: /tmp
+
+  - name: Add wordpress files
+    unarchive:
+        src: "/tmp/{{ wp_version }}.tar.gz"
+        dest: "{{ wp_project_dir }}"
+        owner: ubuntu
+        group: ubuntu
+        mode: 0755
+        remote_src: True
+    sudo: True
+
+  - name: rename wordpress directory
+    command: mv -bT "{{ wp_project_dir }}/wordpress" "{{ wp_project_dir }}/{{ wp_project_name }}"
+    sudo: True
+
+  - name: write wp-config
+    template:
+        src: wp-config.php.j2 
+        dest: "{{ wp_project_dir }}/{{ wp_project_name }}/wp-config.php"
+        owner: ubuntu
+        group: ubuntu
+        mode: 0755
+    sudo: True
