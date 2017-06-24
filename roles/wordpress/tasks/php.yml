@@ -26,3 +26,13 @@
 
   - name: ensure php-fpm is running
     systemd: name=php7.0-fpm state=started enabled=yes
+    sudo: True
+
+  - name: add cgi.fix_pathinfo=0 in /etc/php/7.0/fpm/php.ini
+    lineinfile:
+      path: /etc/php/7.0/fpm/php.ini
+      regexp: '^;cgi.fix_pathinfo='
+      line: 'cgi.fix_pathinfo=0'
+    notify:
+      - restart php7.0-fpm
+    sudo: True

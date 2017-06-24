@@ -1,9 +1,12 @@
 ---
   - name: start nginx
     systemd: name=nginx state=started
+    sudo: True
 
   - name: restart nginx
     systemd: name=nginx state=restarted
+    sudo: True
 
-  - name: restart php-fpm
-    systemd: name=php-fpm state=restarted
+  - name: restart php7.0-fpm
+    systemd: name=php7.0-fpm state=restarted
+    sudo: True
