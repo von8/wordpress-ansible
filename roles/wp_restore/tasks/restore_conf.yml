@@ -1,0 +1,44 @@
+---
+  - name: custom content, plugin, upload directory
+    blockinfile:
+      path: "{{ wp_project_path }}/wp-config.php"
+      insertafter: 'NONCE_SALT'
+      block: |
+        define('WP_CONTENT_DIR', '{{ wp_project_path }}/content');
+        define('WP_CONTENT_URL', 'http://{{ domain }}/content');
+        define('WP_PLUGIN_DIR', '{{ wp_project_dir }}/{{ wp_project_name }}/content/plugins');
+        define('WP_PLUGIN_URL', 'http://{{ domain }}/content/plugins');
+        define('UPLOADS', 'uploads'); 
+    sudo: True
+
+  - name: custom wp-admin login url
+    lineinfile:
+      regexp: 'if($_GET)'
+      insertbefore: 'Make sure that the WordPress bootstrap has run before continuing'
+      path: "{{ wp_project_dir }}/{{ wp_project_name }}/wp-login.php"
+      line: 'if($_GET["my"]!="login"){header("Location: http://{{ domain }}");}'
+    sudo: True
+
+  - name: setup nginx to servo static files
+    blockinfile:
+      path: "/etc/nginx/sites-available/{{ domain }}"
+      regexp: '^location ~*'
+      insertbefore: 'location /'
+      block: |
+        location ~*     .*\.(gif|jpg|jpeg|png|bmp|ico|css|js|txt|flv|swf|mid|doc|ppt|xls|pdf|txt|mp3|wma)$ {
+        try_files $uri $uri/ {{ wp_project_dir }}/{{ wp_project_name }}/uploads/$1;
+        expires 2d;
+        }
+    sudo: True
+    notify:
+      - restart nginx
+
+  - name: setup nginx to servo wp plugins directory
+    lineinfile:
+      regexp: 'location ~^/plugins'
+      insertbefore: 'location /'
+      path: "/etc/nginx/sites-available/{{ domain }}"
+      line: 'location ~^/plugins/(.*)$ {try_files $uri $uri/ /content/plugins/$1;}'
+    sudo: True
+    notify:
+      - restart nginx

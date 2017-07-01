@@ -11,11 +11,12 @@ server {
     index index.php index.html index.htm;
 
     location / {
-    	try_files $uri $uri/ /index.php$is_args$args;                       
+    	try_files $uri $uri/ =404;
     }
 
     location ~ \.php$ {
-        root           {{ wp_project_dir }}/{{ wp_project_name }};
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
         fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
         fastcgi_index  index.php;
         fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
@@ -23,12 +24,4 @@ server {
         fastcgi_cache MYSITE;
         fastcgi_cache_valid 200 60m;
     }
-
-    location = /favicon.ico { log_not_found off; access_log off;  }
-    location = /robots.txt { log_not_found off; access_log off; allow all;  }
-    location ~* \.(css|gif|ico|jpeg|jpg|js|png)$ {
-        expires max;
-        log_not_found off;
-    }
-
 }

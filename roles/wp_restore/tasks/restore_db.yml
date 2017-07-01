@@ -1,0 +1,29 @@
+---
+  - name: copy database dump file
+    copy: 
+      src: "{{ db_backup_file }}"
+      dest: "/tmp/{{ db_backup_file }}"
+      owner: mysql
+      group: mysql 
+    sudo: True
+
+  - name: restore database
+    mysql_db:
+      name: "{{ db_name }}"
+      config_file: /home/ubuntu/.my.cnf
+      state: import
+      target: "/tmp/{{ db_backup_file }}"
+    sudo: True
+
+  - name: copy shell script to remote host
+    template:
+      src: updatedomain.sh.j2
+      dest: /tmp/updatedomain.sh
+      owner: ubuntu
+      group: ubuntu
+      mode: 0700
+    sudo: True
+
+  - name: change the value of domain in database
+    command: sh /tmp/updatedomain.sh
+    sudo: True

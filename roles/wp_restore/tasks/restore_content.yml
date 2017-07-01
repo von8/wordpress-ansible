@@ -1,0 +1,49 @@
+---
+  - name: upload wp-content
+    synchronize:
+      src: "{{ wp_content_backup_file }}"
+      dest: "{{ wp_project_dir }}/{{ wp_project_name }}/{{ wp_content_backup_file }}" 
+      archive: yes
+      owner: no
+      group: no
+      perms: no
+    sudo: True
+
+  - name: unarchive "{{ wp_content_backup_file }}"
+    unarchive:
+      src: "{{ wp_project_path }}/{{ wp_content_backup_file }}"
+      dest: "{{ wp_project_dir }}/{{ wp_project_name }}"
+      remote_src: True
+    sudo: True
+
+  - name: upload wordpress uploads
+    synchronize:
+      src: "{{ wp_uploads_backup_file }}"
+      dest: "{{ wp_project_dir }}/{{ wp_project_name }}"
+      archive: yes
+      owner: no
+      group: no
+      perms: no
+    sudo: True
+
+  - name: unarchive uploads.tar.gz
+    unarchive:
+      src: "{{ wp_project_path }}/{{ wp_uploads_backup_file }}"
+      dest: "{{ wp_project_dir }}/{{ wp_project_name }}"
+      remote_src: True
+    sudo: True
+
+  - name: delect former wp-content
+    file:
+      path: "{{ wp_project_path }}/wp-content"
+      state: absent
+    sudo: True
+
+  - name: change ownership, group and mode
+    file:
+      path: "{{ wp_project_dir }}"
+      owner: www-data
+      group: www-data
+      mode: 0755
+      recurse: yes
+    sudo: True

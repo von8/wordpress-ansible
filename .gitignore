@@ -3,3 +3,6 @@ secrets.yml
 *.retry
 roles/wordpress/vars/main.yml
 roles/wordpress/files/wordpress-4.7.3-zh_CN.tar.gz
+roles/wp_restore/vars/main.yml
+roles/wp_restore/files/*.tar.gz
+roles/wp_restore/files/*.sql

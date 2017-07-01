@@ -1,0 +1,6 @@
+domain: example.com
+wp_project_dir: /var/www
+wp_project_name: project
+wp_project_path: "{{ wp_project_dir }}{{ wp_project_name }}"
+old_domain: yourolddomain
+new_domain: yournewdomain

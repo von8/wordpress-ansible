@@ -1,0 +1,10 @@
+---
+- name: restore wordpress website
+  hosts: qcloud
+  vars_files:
+    - variables/secrets.yml
+  roles:
+    - role: wp_restore
+      wp_content_backup_file: content-170627.tar.gz
+      wp_uploads_backup_file: uploads-170627.tar.gz
+      db_backup_file: db-20170627.sql

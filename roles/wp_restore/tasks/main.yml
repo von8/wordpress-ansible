@@ -1,0 +1,12 @@
+---
+  - name: install rsync
+    apt: pkg=rsync update_cache=yes cache_valid_time=3600
+    sudo: True
+
+  - name: ensure rsync is runing (and enable it at boot)
+    systemd: name=rsync state=started enabled=yes
+    sudo: True
+
+  - include: restore_content.yml
+  - include: restore_db.yml
+  - include: restore_conf.yml

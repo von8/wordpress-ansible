@@ -1,0 +1,13 @@
+#!/bin/bash
+MYSQL=`which mysql`
+$MYSQL wpdata -u root<<EOF
+show databases;
+use wpdata;
+UPDATE wp_options SET option_value = replace( option_value, 'http://{{ old_domain }}', 'http://{{ new_domain }}' ) WHERE option_name = 'home' OR option_name = 'siteurl';
+UPDATE wp_options SET option_value = replace( option_value, 'http://{{ old_domain }}', 'http://{{ new_domain }}' ) WHERE option_name = 'home' OR option_name = 'siteurl';
+UPDATE wp_posts SET post_content = replace( post_content, 'http://{{ old_domain }}', 'http://{{ new_domain }}' ) ;
+UPDATE wp_posts SET guid = replace( guid, 'http://{{ old_domain }}', 'http://{{ new_domain }}' ) ;
+UPDATE wp_options SET option_value = replace(option_value, 'http://{{ old_domain }}', 'http://{{ new_domain }}');
+UPDATE wp_options SET option_value = replace(option_value, '{{ old_domain }}', '{{ new_domain }}');
+UPDATE wp_posts SET post_content = replace(post_content, '{{ old_domain }}','{{ new_domain }}') ;
+EOF
